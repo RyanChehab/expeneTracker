@@ -88,7 +88,7 @@ function injectForm(type){
     <br>
     <div class="flex align-center gap-3">
         <label for="date">Date</label>
-        <input type="date" required>
+        <input type="date" id="date" required>
     </div>  
     <br>
     <div class="flex gap-1">
@@ -112,7 +112,7 @@ function injectForm(type){
     </div>
     <br>
     <div class="flex align-center gap-3">
-        <label for="date">Date</label>
+        <label for="date" id="date" required>Date</label>
         <input type="date" required>
     </div>  
     <br>
@@ -126,5 +126,29 @@ function injectForm(type){
 </form>`
 
 portal_top.append(form)
+document.getElementById('transactionForm').addEventListener('submit',(e)=>{
+    e.preventDefault();
+})
+
+let amount = document.getElementById('amount').value
+let date = document.getElementById('date').value
+let description = document.getElementById('description').value
+
+let transaction = {
+    type: type,
+    amount: amount,
+    date:date,
+    description:description,
+}
+
+// get existing transaction or create a new array
+const transactions = JSON.parse(localStorage.getItem('financialTracker'))|| []
+
+// pushing the collected object into the array 
+transactions.push(transaction);
+
+// saving in local storage
+localStorage.setItem('financialTracker', JSON.stringify(transactions))
+
     }
 }
