@@ -13,7 +13,6 @@ income.addEventListener('click',function(){
         // displaying expense as none
         expense_sheet.classList.remove('d-block')
         expense_sheet.classList.add('d-none')
-        displayTransactions("income")
     }
     else{
         income_sheet.classList.remove('d-none')
@@ -21,7 +20,6 @@ income.addEventListener('click',function(){
         // displaying expense as none
         expense_sheet.classList.remove('d-block')
         expense_sheet.classList.add('d-none')
-        displayTransactions("income")
     }
 })
 // displaying  expense_sheet
@@ -33,7 +31,6 @@ expense.addEventListener('click',function(){
         // displaying income as none
         income_sheet.classList.remove('d-block')
         income_sheet.classList.add('d-none')
-        displayTransactions("expense")
     }
     else{
         expense_sheet.classList.remove("d-none")
@@ -41,7 +38,6 @@ expense.addEventListener('click',function(){
         // displaying income as none
         income_sheet.classList.remove('d-block')
         income_sheet.classList.add('d-none')
-        displayTransactions("expense")
     }
     
 })
@@ -76,133 +72,104 @@ add_expense.addEventListener('click',function(){
     injectForm("expense")
 })
 
-function injectForm(type){
-    const portal_top = document.getElementById('portal_top')
-        // if portal_top has a form delete it
-        const existsForm = portal_top.querySelector('.IncomeForm')
-        if (existsForm){
-            portal_top.removeChild(existsForm)
-        }
-    if(type==="income"){
-        let form = document.createElement('div')
-        form.classList.add("IncomeForm")
-        form.innerHTML = `<form id="transactionForm">
-    <div class="flex align-center gap-2">
-        <label for="number">Amount</label>
-        <input type="number" name="number" id="amount" placeholder="$" required>
-    </div>
-    <br>
-    <div class="flex align-center gap-3">
-        <label for="date">Date</label>
-        <input type="date" id="date" required>
-    </div>  
-    <br>
-    <div class="flex gap-1">
-        <label for="description">Description</label>
-        <input type="text" id="description" required>
-    </div>
-    <div class="submit-div">
-    <button class="submit-btn" type="submit">Save</button>
-    </div>
-</form>`
-        portal_top.append(form)
+function injectForm(type) {
+    const portal_top = document.getElementById('portal_top');
 
+    // If portal_top has a form, delete it
+    const existsForm = portal_top.querySelector('.Form');
+    if (existsForm) {
+        portal_top.removeChild(existsForm);
     }
-    else{
-        let form = document.createElement('div')
-        form.classList.add("IncomeForm")
-        form.innerHTML = `<form  id="transactionForm">
-    <div class="flex align-center gap-2">
-        <label for="number">Amount</label>
-        <input type="number" name="number" id="amount" placeholder="$" required>
-    </div>
-    <br>
-    <div class="flex align-center gap-3">
-        <label for="date" id="date" required>Date</label>
-        <input type="date" required>
-    </div>  
-    <br>
-    <div class="flex gap-1">
-        <label for="description">Description</label>
-        <input type="text" id="description" required>
-    </div>
-    <div class="submit-div">
-    <button class="submit-btn" type="submit">Save</button>
-    </div>
-</form>`
 
-portal_top.append(form)
-document.getElementById('transactionForm').addEventListener('submit',(e)=>{
-    e.preventDefault();
-})
+    // Create form based on type (income or expense)
+    let form = document.createElement('div');
+    form.classList.add("Form");
+    form.innerHTML = `
+        <form id="transactionForm">
+            <div class="flex align-center gap-2">
+                <label for="number">Amount</label>
+                <input type="number" name="number" id="amount" placeholder="$" required>
+            </div>
+            <br>
+            <div class="flex align-center gap-3">
+                <label for="date">Date</label>
+                <input type="date" id="date" required>
+            </div>  
+            <br>
+            <div class="flex gap-1">
+                <label for="description">Description</label>
+                <input type="text" id="description" required>
+            </div>
+            <div class="submit-div">
+                <button class="submit-btn" id="saving-btn" type="submit">Save</button>
+            </div>
+        </form>`;
 
-let amount = document.getElementById('amount').value
-let date = document.getElementById('date').value
-let description = document.getElementById('description').value
+    portal_top.append(form);
 
-let transaction = {
-    type: type,
-    amount: amount,
-    date:date,
-    description:description,
+    // stops the default submision and fills localstorage with Data
+    document.getElementById('transactionForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        
+            console.log("wor")
+            portal.classList.remove('d-block')
+            portal.classList.add('d-none')
+            overlay.classList.add('d-none')
+
+        let amount = document.getElementById('amount').value;
+        let date = document.getElementById('date').value;
+        let description = document.getElementById('description').value;
+
+        let transactionid = Date.now()
+
+        let transaction = {
+            id:transactionid,
+            type: type,
+            amount: amount,
+            date: date,
+            description: description,
+        };
+
+        // Get existing transactions or create a new array
+        const transactions = JSON.parse(localStorage.getItem('financialTracker')) || [];
+
+        // Push the new transaction to the array
+        transactions.push(transaction);
+        console.log(transactions)
+        // Save in localStorage
+        localStorage.setItem('financialTracker', JSON.stringify(transactions));
+        console.log('Saved in localStorage:', transaction);
+
+        injectTransaction(transaction.type)
+    });
 }
 
-// get existing transaction or create a new array
-const transactions = JSON.parse(localStorage.getItem('financialTracker'))|| []
 
-// pushing the collected object into the array 
-transactions.push(transaction);
+function injectTransaction(transaction){
 
-// saving in local storage
-localStorage.setItem('financialTracker', JSON.stringify(transactions))
+    const transactionDiv = document.createElement('div');
+    transactionDiv.classList.add("test", transaction.type);
+    transactionDiv.setAttribute('data-id', transaction.id)
 
-    }
-}
+    transactionDiv.innerHTML = 
+       `<div class="test">
+            <div class="flex space-between m-1">
+                <p id="type">${transaction.type}</p>
+                <i class="fas fa-minus delete" title="delete transaction"></i>
+            </div>
+            <hr style="border-color: black;">
+        <br>
+            <p class="ml-1">Amount:${transaction.amount}</p><br>
+            <p class="ml-1">Date:${transaction.date}
+            <p class="ml-1 mb-1">Description:${transaction.description}</p>
+       </div>`
+       
+       const sheet = transaction.type === "income" ? income_sheet : expense_sheet;
+    sheet.appendChild(transactionDiv);
 
-function displayTransactions(type){
-    // const displayArea =document.getElementById('display')
-    // displayArea.innerHTML = '';
-
-    // retrieving data
-    const transactions = JSON.parse(localStorage.getItem('financialTracker')) || [];
-
-    // filtering transactions based on type
-    const filteredTransactions = transactions.filter(transaction => transaction.type === type)
-
-    filteredTransactions.forEach(transaction => {
-        const transactionDiv = document.createElement('div')
-        transactionDiv.classList.add('transaction',type)
-        
-        transactionDiv.innerHTML = 
-        `<p>Amount: $${transaction.amount}</p>
-            <p>Date: ${transaction.date}</p>
-            <p>Description: ${transaction.description}</p>`
-        
-        income_sheet.appendChild(transactionDiv)
+    // 0delete functionality
+    const deleteBtn = transactionDiv.querySelector('.delete');
+    deleteBtn.addEventListener('click', () => {
+        deleteTransaction(transaction.id, transactionDiv);
     });
-
-} 
-
-function displayTransactions(type){
-    // const displayArea =document.getElementById('display')
-    // displayArea.innerHTML = '';
-
-    // retrieving data
-    const transactions = JSON.parse(localStorage.getItem('financialTracker')) || [];
-
-    // filtering transactions based on type
-    const filteredTransactions = transactions.filter(transaction => transaction.type === type)
-
-    filteredTransactions.forEach(transaction => {
-        const transactionDiv = document.createElement('div')
-        transactionDiv.classList.add('transaction',type)
-        
-        transactionDiv.innerHTML = `
-        <p>Amount: $${transaction.amount}</p>
-            <p>Date: ${transaction.date}</p>
-            <p>Description: ${transaction.description}</p>
-        `
-        // income_sheet.appendChild(transactionDiv)
-    });
-
 }
