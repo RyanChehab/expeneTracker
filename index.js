@@ -13,6 +13,7 @@ income.addEventListener('click',function(){
         // displaying expense as none
         expense_sheet.classList.remove('d-block')
         expense_sheet.classList.add('d-none')
+        displayTransactions("income")
     }
     else{
         income_sheet.classList.remove('d-none')
@@ -20,6 +21,7 @@ income.addEventListener('click',function(){
         // displaying expense as none
         expense_sheet.classList.remove('d-block')
         expense_sheet.classList.add('d-none')
+        displayTransactions("income")
     }
 })
 // displaying  expense_sheet
@@ -31,6 +33,7 @@ expense.addEventListener('click',function(){
         // displaying income as none
         income_sheet.classList.remove('d-block')
         income_sheet.classList.add('d-none')
+        displayTransactions("expense")
     }
     else{
         expense_sheet.classList.remove("d-none")
@@ -38,6 +41,7 @@ expense.addEventListener('click',function(){
         // displaying income as none
         income_sheet.classList.remove('d-block')
         income_sheet.classList.add('d-none')
+        displayTransactions("expense")
     }
     
 })
@@ -56,6 +60,7 @@ add_income.addEventListener('click',function(){
     overlay.classList.remove('d-none')
     const portal_title = document.getElementById('top-title')
     portal_title.innerText = 'Add Income';
+     // calling to inject the dynamic form
     injectForm("income")
 })
 
@@ -67,7 +72,8 @@ add_expense.addEventListener('click',function(){
     overlay.classList.remove('d-none')
     const portal_title = document.getElementById('top-title')
     portal_title.innerText = 'Add Expense';
-    injectForm(expense)
+    // calling to inject the dynamic form
+    injectForm("expense")
 })
 
 function injectForm(type){
@@ -151,4 +157,52 @@ transactions.push(transaction);
 localStorage.setItem('financialTracker', JSON.stringify(transactions))
 
     }
+}
+
+function displayTransactions(type){
+    // const displayArea =document.getElementById('display')
+    // displayArea.innerHTML = '';
+
+    // retrieving data
+    const transactions = JSON.parse(localStorage.getItem('financialTracker')) || [];
+
+    // filtering transactions based on type
+    const filteredTransactions = transactions.filter(transaction => transaction.type === type)
+
+    filteredTransactions.forEach(transaction => {
+        const transactionDiv = document.createElement('div')
+        transactionDiv.classList.add('transaction',type)
+        
+        transactionDiv.innerHTML = 
+        `<p>Amount: $${transaction.amount}</p>
+            <p>Date: ${transaction.date}</p>
+            <p>Description: ${transaction.description}</p>`
+        
+        income_sheet.appendChild(transactionDiv)
+    });
+
+} 
+
+function displayTransactions(type){
+    // const displayArea =document.getElementById('display')
+    // displayArea.innerHTML = '';
+
+    // retrieving data
+    const transactions = JSON.parse(localStorage.getItem('financialTracker')) || [];
+
+    // filtering transactions based on type
+    const filteredTransactions = transactions.filter(transaction => transaction.type === type)
+
+    filteredTransactions.forEach(transaction => {
+        const transactionDiv = document.createElement('div')
+        transactionDiv.classList.add('transaction',type)
+        
+        transactionDiv.innerHTML = `
+        <p>Amount: $${transaction.amount}</p>
+            <p>Date: ${transaction.date}</p>
+            <p>Description: ${transaction.description}</p>
+        `
+        // income_sheet.appendChild(transactionDiv)
+    });
+
 }
