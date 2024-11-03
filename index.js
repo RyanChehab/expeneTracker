@@ -140,7 +140,7 @@ function injectForm(type) {
         localStorage.setItem('financialTracker', JSON.stringify(transactions));
         console.log('Saved in localStorage:', transaction);
 
-        injectTransaction(transaction.type)
+        injectTransaction(transaction)
     });
 }
 
@@ -148,8 +148,8 @@ function injectForm(type) {
 function injectTransaction(transaction){
 
     const transactionDiv = document.createElement('div');
-    transactionDiv.classList.add("test", transaction.type);
-    transactionDiv.setAttribute('data-id', transaction.id)
+    // transactionDiv.classList.add("test", transaction.type);
+    // transactionDiv.setAttribute('data-id', transaction.id)
 
     transactionDiv.innerHTML = 
        `<div class="test">
@@ -173,3 +173,25 @@ function injectTransaction(transaction){
         deleteTransaction(transaction.id, transactionDiv);
     });
 }
+
+function displayTransactions(type) {
+    // Get transactions from localStorage
+    const transactions = JSON.parse(localStorage.getItem('financialTracker')) || [];
+
+    // Filter transactions by type (income or expense)
+    const filteredTransactions = transactions.filter(transaction => transaction.type === type);
+
+    // Clear the appropriate sheet before injecting transactions
+    const sheet = type === "income" ? income_sheet : expense_sheet;
+    sheet.innerHTML = '';
+
+    // Inject each filtered transaction
+    filteredTransactions.forEach(transaction => {
+        injectTransaction(transaction);
+    });
+}
+
+window.addEventListener('load', () => {
+    displayTransactions("income");
+    displayTransactions("expense");
+});
