@@ -65,19 +65,19 @@ function injectForm(type) {
 
     // Create form based on type (income or expense)
     let form = document.createElement('div');
-    form.classList.add("Form");
+    form.classList.add("inputForm");
     form.innerHTML = `
         <form id="transactionForm">
             <div class="flex align-center gap-2">
                 <label for="number">Amount</label>
                 <input type="number" name="number" id="amount" placeholder="$" required>
             </div>
-            <br>
+            <br><br><br>
             <div class="flex align-center gap-3">
                 <label for="date">Date</label>
                 <input type="date" id="date" required>
             </div>  
-            <br>
+            <br><br><br>
             <div class="flex gap-1">
                 <label for="description">Description</label>
                 <input type="text" id="description" required>
@@ -140,7 +140,7 @@ function injectTransaction(data) {
         <div class="transForm-${transaction.type}" >
              <div class="flex space-between m-1">
                  <p>${transaction.type}</p>
-                 <i class="fas fa-minus delete" title="Delete transaction" id="${transaction.id}"></i>
+                 <i class="delete fas fa-minus" title="Delete transaction" id="${transaction.id}"></i>
              </div>
              <hr style="border-color:black;">
              <p>Amount: ${transaction.amount}</p>

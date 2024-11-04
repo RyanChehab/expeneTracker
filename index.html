@@ -16,15 +16,15 @@
             </div>
             <div class="Budget flex align-center p-1">
                 <h3 class="mf">Budget:</h3>
-                <p id="budget" class="">&nbsp;&nbsp;&nbsp;$333333</p>
+                <p id="budget">&nbsp;&nbsp;&nbsp;$333333</p>
             </div>
     </nav>
     <!-- menu -->
      <div class="menu flex space-between align-center">
         <!-- expense or income -->
         <div class="options flex p-2">
-            <button class="btn p-05" id="income">Income</button>
-            <button class="btn p-05" id="expense">Expenses</button>
+            <button class="p-05 btns" id="income">Income</button>
+            <button class="p-05 btns" id="expense">Expenses</button>
         </div>
         <div class="filter">
             <i class="filter fas fa-sliders-h m-2"></i>
@@ -34,18 +34,21 @@
      <!-- income/expense sheets -->
       <div class="income d-none" id="income_sheet">
         <button class="add-income" id="add-income">Add Income</button>
+        <div id="incomeTransactions"></div>
       </div>
       <div class="expense d-none" id="expense_sheet">
-        <button class="add-expense">Add Expense</button>
+        <button class="add-expense" id="add-expense">Add Expense</button>
+        <div id="expenseTransactions"></div>
       </div>
 
+      <div class="overlay d-none" id="overlay"></div>
       <!-- add income -->
-       <div class="add_portal">
-            <div class="top">
+       <div class="add_portal d-none" id="portal">
+            <div class="top" id="portal_top">
                 <div class="flex justify-center align-center space-between p-2">
-                    <h2 id="top-title">Dummy</h2>
+                    <h2 id="top-title"></h2>
                     <!-- close portal btn -->
-                    <i class="fas fa-times close"  title="close portal"></i>
+                    <i class="fas fa-times close"  title="close portal" id="close_btn"></i>
                 </div>
             </div>
        </div>

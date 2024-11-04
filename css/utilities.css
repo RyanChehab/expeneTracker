@@ -52,15 +52,7 @@
 .mf{
     font-family: sans-serif;
 }
-button{
-    cursor: pointer;
-    padding: 7px;
-    background: #2ECC71;
-    border-radius: 5px;
-    color: #fff;
-    font-family:sans-serif;
-    font-weight: 400;
-}
+
 .d-none{
     display: none;
 }
