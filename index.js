@@ -4,7 +4,8 @@ const income_sheet = document.getElementById("income_sheet");
 const expense_sheet = document.getElementById("expense_sheet");
 const portal = document.getElementById('portal')
 const add_income = document.getElementById('add-income')
-
+let balance=0;
+const budget = document.getElementById('budget')
 // toggele showing the transaction pages
 function toggleSheet(showSheet, hideSheet) {
     showSheet.classList.remove('d-none');
@@ -91,7 +92,7 @@ function injectForm(type) {
     // stops the default submision and fills localstorage with Data
     document.getElementById('transactionForm').addEventListener('submit', (e) => {
         e.preventDefault();
-
+        injectTransaction(data)
         //hiding the portal
         portal.classList.remove('d-block')
         portal.classList.add('d-none')
@@ -121,7 +122,7 @@ function injectForm(type) {
         // Save in localStorage
         localStorage.setItem('financialTracker', JSON.stringify(transactions));
         console.log('Saved in localStorage:', transactions);
-
+        
     });
 }
 
@@ -136,10 +137,10 @@ function injectTransaction(data) {
     data.forEach(transaction=>{
         const form = document.createElement('div')
         form.innerHTML = `
-        <div class="test">
+        <div class="transForm-${transaction.type}" >
              <div class="flex space-between m-1">
                  <p>${transaction.type}</p>
-                 <i class="fas fa-minus delete" title="Delete transaction"></i>
+                 <i class="fas fa-minus delete" title="Delete transaction" id="${transaction.id}"></i>
              </div>
              <hr style="border-color:black;">
              <p>Amount: ${transaction.amount}</p>
@@ -150,9 +151,51 @@ function injectTransaction(data) {
       const divId = transaction.type === "income"?
       income_sheet.appendChild(form):expense_sheet.appendChild(form)
       
+      if(transaction.type === "income"){
+        balance+=Number(transaction.amount)
+        console.log(balance)
+      }else{
+        balance-=Number(transaction.amount)
+        console.log(balance)
+      }
       
     })
+    budget.innerText = balance;
 }
+
+document.querySelectorAll('.delete').forEach(icon => {
+    icon.addEventListener('click', (event) => {
+        console.log("okk")
+        const transactionid = event.target.id;
+        deleteTransaction(transactionid); // Call deleteTransaction with the correct id
+    });
+});
+
+function deleteTransaction(transactionid) {
+    // Retrieve transactions from localStorage
+    const transactions = JSON.parse(localStorage.getItem('financialTracker')) || [];
+
+    // Find the transaction to delete for updating balance
+    const transactionToDelete = transactions.find(transaction => transaction.id == transactionid);
+    
+    // Update budget
+    if (transactionToDelete.type === "income") {
+        balance -= Number(transactionToDelete.amount);
+    } else {
+        balance += Number(transactionToDelete.amount);
+    }
+    budget.innerText = balance; 
+
+    // Filter out the transaction from the array
+    const updatedTransactions = transactions.filter(transaction => transaction.id != transactionid);
+
+    // Update localStorage 
+    localStorage.setItem('financialTracker', JSON.stringify(updatedTransactions));
+
+    // Remove the transaction from frontend
+    
+}
+
 document.addEventListener('DOMContentLoaded', () => {
-    console.log(injectTransaction(data))
+    injectTransaction(data)
 });
