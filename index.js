@@ -5,42 +5,23 @@ const expense_sheet = document.getElementById("expense_sheet");
 const portal = document.getElementById('portal')
 const add_income = document.getElementById('add-income')
 
-// displaying income_sheet
-income.addEventListener('click',function(){
-    if(income_sheet.classList.contains('d-block')){
-        income_sheet.classList.remove('d-block');
-        income_sheet.classList.add('d-none')
-        // displaying expense as none
-        expense_sheet.classList.remove('d-block')
-        expense_sheet.classList.add('d-none')
-    }
-    else{
-        income_sheet.classList.remove('d-none')
-        income_sheet.classList.add('d-block')
-        // displaying expense as none
-        expense_sheet.classList.remove('d-block')
-        expense_sheet.classList.add('d-none')
-    }
-})
-// displaying  expense_sheet
-expense.addEventListener('click',function(){
-    if (expense_sheet.classList.contains("d-block")){
-        expense_sheet.classList.remove('d-block')
-        expense_sheet.classList.add("d-none")
+// toggele showing the transaction pages
+function toggleSheet(showSheet, hideSheet) {
+    showSheet.classList.remove('d-none');
+    showSheet.classList.add('d-block');
+    hideSheet.classList.remove('d-block');
+    hideSheet.classList.add('d-none');
+}
 
-        // displaying income as none
-        income_sheet.classList.remove('d-block')
-        income_sheet.classList.add('d-none')
-    }
-    else{
-        expense_sheet.classList.remove("d-none")
-        expense_sheet.classList.add("d-block")
-        // displaying income as none
-        income_sheet.classList.remove('d-block')
-        income_sheet.classList.add('d-none')
-    }
-    
-})
+// Event listeners for income and expense buttons
+income.addEventListener('click', function() {
+    toggleSheet(income_sheet, expense_sheet);
+    console.log("work")
+});
+
+expense.addEventListener('click', function() {
+    toggleSheet(expense_sheet, income_sheet);
+});
 
 // close portal
 const close_btn = document.getElementById('close_btn')
@@ -110,12 +91,13 @@ function injectForm(type) {
     // stops the default submision and fills localstorage with Data
     document.getElementById('transactionForm').addEventListener('submit', (e) => {
         e.preventDefault();
-        
-            console.log("wor")
-            portal.classList.remove('d-block')
-            portal.classList.add('d-none')
-            overlay.classList.add('d-none')
 
+        //hiding the portal
+        portal.classList.remove('d-block')
+        portal.classList.add('d-none')
+        overlay.classList.add('d-none')
+
+        // getting the value from inputs 
         let amount = document.getElementById('amount').value;
         let date = document.getElementById('date').value;
         let description = document.getElementById('description').value;
@@ -138,60 +120,75 @@ function injectForm(type) {
         console.log(transactions)
         // Save in localStorage
         localStorage.setItem('financialTracker', JSON.stringify(transactions));
-        console.log('Saved in localStorage:', transaction);
+        console.log('Saved in localStorage:', transactions);
 
-        injectTransaction(transaction)
     });
 }
 
-
-function injectTransaction(transaction){
-
-    const transactionDiv = document.createElement('div');
-    // transactionDiv.classList.add("test", transaction.type);
-    // transactionDiv.setAttribute('data-id', transaction.id)
-
-    transactionDiv.innerHTML = 
-       `<div class="test">
-            <div class="flex space-between m-1">
-                <p id="type">${transaction.type}</p>
-                <i class="fas fa-minus delete" title="delete transaction"></i>
-            </div>
-            <hr style="border-color: black;">
-        <br>
-            <p class="ml-1">Amount:${transaction.amount}</p><br>
-            <p class="ml-1">Date:${transaction.date}
-            <p class="ml-1 mb-1">Description:${transaction.description}</p>
-       </div>`
-       
-       const sheet = transaction.type === "income" ? income_sheet : expense_sheet;
-    sheet.appendChild(transactionDiv);
-
-    // 0delete functionality
-    const deleteBtn = transactionDiv.querySelector('.delete');
-    deleteBtn.addEventListener('click', () => {
-        deleteTransaction(transaction.id, transactionDiv);
-    });
+function getTransactions(){
+    //get transactions from local storage
 }
+function injectTransaction(transactions) {
+    transactions.forEach(transaction=>{
+        // const divId = transaction.type === "income"?"income": "expense"
+        // console.log(divId)
 
-function displayTransactions(type) {
-    // Get transactions from localStorage
-    const transactions = JSON.parse(localStorage.getItem('financialTracker')) || [];
-
-    // Filter transactions by type (income or expense)
-    const filteredTransactions = transactions.filter(transaction => transaction.type === type);
-
-    // Clear the appropriate sheet before injecting transactions
-    const sheet = type === "income" ? income_sheet : expense_sheet;
-    sheet.innerHTML = '';
-
-    // Inject each filtered transaction
-    filteredTransactions.forEach(transaction => {
-        injectTransaction(transaction);
-    });
+    })
 }
+    // transactionDiv.innerHTML = `
+    //    <div class="test">
+    //         <div class="flex space-between m-1">
+    //             <p>${transaction.type}</p>
+    //             <i class="fas fa-minus delete" title="Delete transaction"></i>
+    //         </div>
+    //         <hr style="border-color:black;">
+    //         <p>Amount: ${transaction.amount}</p>
+    //         <p>Date: ${transaction.date}</p>
+    //         <p>Description: ${transaction.description}</p>
+    //    </div>`;
 
-window.addEventListener('load', () => {
-    displayTransactions("income");
-    displayTransactions("expense");
-});
+    // const transactionsContainer = transaction.type === "income" ? document.getElementById('incomeTransactions') : document.getElementById('expenseTransactions');
+    // const addButton = transaction.type === "income" ? document.getElementById('add-income') : document.getElementById('add-expense');
+
+    // transactionsContainer.appendChild(transactionDiv);
+
+    // // Delete functionality
+    // const deleteBtn = transactionDiv.querySelector('.delete');
+    // deleteBtn.addEventListener('click', () => {
+    //     deleteTransaction(transaction.id, transactionDiv);
+    //     checkAndToggleAddButton(transaction.type); // Re-check button visibility after deletion
+//     });
+// }
+
+
+
+
+
+
+
+
+
+
+
+
+// function displayTransactions(type) {
+//     // Get transactions from localStorage
+//     const transactions = JSON.parse(localStorage.getItem('financialTracker')) || [];
+
+//     // Filter transactions by type (income or expense)
+//     const filteredTransactions = transactions.filter(transaction => transaction.type === type);
+
+//     // Clear the appropriate sheet before injecting transactions
+//     const sheet = type === "income" ? income_sheet : expense_sheet;
+//     sheet.innerHTML = '';
+
+//     // Inject each filtered transaction
+//     filteredTransactions.forEach(transaction => {
+//         injectTransaction(transaction);
+//     });
+// }
+
+// window.addEventListener('load', () => {
+//     displayTransactions("income");
+//     displayTransactions("expense");
+// });
