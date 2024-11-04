@@ -127,68 +127,32 @@ function injectForm(type) {
 
 function getTransactions(){
     //get transactions from local storage
+    const transactions = JSON.parse(localStorage.getItem('financialTracker')) || [];
+    return transactions;
 }
-function injectTransaction(transactions) {
-    transactions.forEach(transaction=>{
-        // const divId = transaction.type === "income"?"income": "expense"
-        // console.log(divId)
+const data = getTransactions()
 
+function injectTransaction(data) {
+    data.forEach(transaction=>{
+        const form = document.createElement('div')
+        form.innerHTML = `
+        <div class="test">
+             <div class="flex space-between m-1">
+                 <p>${transaction.type}</p>
+                 <i class="fas fa-minus delete" title="Delete transaction"></i>
+             </div>
+             <hr style="border-color:black;">
+             <p>Amount: ${transaction.amount}</p>
+             <p>Date: ${transaction.date}</p>
+            <p>Description: ${transaction.description}</p>
+      </div>`;
+      
+      const divId = transaction.type === "income"?
+      income_sheet.appendChild(form):expense_sheet.appendChild(form)
+      
+      
     })
 }
-    // transactionDiv.innerHTML = `
-    //    <div class="test">
-    //         <div class="flex space-between m-1">
-    //             <p>${transaction.type}</p>
-    //             <i class="fas fa-minus delete" title="Delete transaction"></i>
-    //         </div>
-    //         <hr style="border-color:black;">
-    //         <p>Amount: ${transaction.amount}</p>
-    //         <p>Date: ${transaction.date}</p>
-    //         <p>Description: ${transaction.description}</p>
-    //    </div>`;
-
-    // const transactionsContainer = transaction.type === "income" ? document.getElementById('incomeTransactions') : document.getElementById('expenseTransactions');
-    // const addButton = transaction.type === "income" ? document.getElementById('add-income') : document.getElementById('add-expense');
-
-    // transactionsContainer.appendChild(transactionDiv);
-
-    // // Delete functionality
-    // const deleteBtn = transactionDiv.querySelector('.delete');
-    // deleteBtn.addEventListener('click', () => {
-    //     deleteTransaction(transaction.id, transactionDiv);
-    //     checkAndToggleAddButton(transaction.type); // Re-check button visibility after deletion
-//     });
-// }
-
-
-
-
-
-
-
-
-
-
-
-
-// function displayTransactions(type) {
-//     // Get transactions from localStorage
-//     const transactions = JSON.parse(localStorage.getItem('financialTracker')) || [];
-
-//     // Filter transactions by type (income or expense)
-//     const filteredTransactions = transactions.filter(transaction => transaction.type === type);
-
-//     // Clear the appropriate sheet before injecting transactions
-//     const sheet = type === "income" ? income_sheet : expense_sheet;
-//     sheet.innerHTML = '';
-
-//     // Inject each filtered transaction
-//     filteredTransactions.forEach(transaction => {
-//         injectTransaction(transaction);
-//     });
-// }
-
-// window.addEventListener('load', () => {
-//     displayTransactions("income");
-//     displayTransactions("expense");
-// });
+document.addEventListener('DOMContentLoaded', () => {
+    console.log(injectTransaction(data))
+});
